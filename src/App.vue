@@ -2,7 +2,8 @@
   <v-app>
     <v-app-bar density="compact">
       <v-app-bar-title>P2P Games</v-app-bar-title>
-      <template v-slot:append>
+
+      <template #append>
         <v-btn
           class="m-2"
           icon="mdi-theme-light-dark"
@@ -10,6 +11,7 @@
         />
       </template>
     </v-app-bar>
+
     <v-main>
       <router-view />
     </v-main>
