@@ -3,11 +3,12 @@
     <v-card-item>
       <v-card-title>Joined Users</v-card-title>
     </v-card-item>
+
     <v-card-text>
       <div class="flex space-x-2">
-        <v-chip 
-          v-for="[clientId, value] in store.users" 
-          :key="clientId" 
+        <v-chip
+          v-for="[clientId, value] in store.users"
+          :key="clientId"
           variant="outlined"
         >
           {{ value.user.username }}
