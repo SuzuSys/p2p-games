@@ -50,8 +50,6 @@
 
   const username = useField('username')
 
-  const submit = handleSubmit(values => {
-    store.username = values.username
-  })
+  const submit = handleSubmit(values => store.changeUsername(values.username))
 
 </script>

@@ -6,6 +6,7 @@ import { getYjsDoc, syncedStore } from '@syncedstore/core'
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { WebrtcProvider } from 'y-webrtc'
+import { z } from 'zod'
 
 interface Todo {
   completed: boolean
@@ -28,10 +29,22 @@ interface Snackbar {
   color: ColorType
 }
 
+const awarenessLocalStateSchema = z.object({
+  username: z.string(),
+})
+
+const awarenessStatusSchema = z.map(
+  z.number(),
+  z.object({
+    user: awarenessLocalStateSchema,
+  }),
+)
+
 export const useAppStore = defineStore('app', () => {
   const username = ref('')
   const room: Ref<RoomStore | undefined> = ref()
   const snackbars: Ref<Snackbar[]> = ref([])
+  const users: Ref<z.infer<typeof awarenessStatusSchema>> = ref(new Map())
 
   const createRoom = (roomId: string, password: string) => {
     const store = syncedStore({
@@ -44,26 +57,33 @@ export const useAppStore = defineStore('app', () => {
       signaling: [import.meta.env.VITE_SIGNALING],
     })
 
-    const awareness = provider.awareness
-
-    awareness.setLocalStateField('user', {
-      username: username.value,
-    })
-
-    console.log(awareness.getStates().values())
-
-    awareness.on('change', () => {
-      console.log(awareness.getStates().values())
-    })
-
     provider.on('synced', _ => snackbars.value.push({
       text: 'Synced!',
       color: 'success',
     }))
 
+    const awareness = provider.awareness
+
+    awareness.setLocalStateField('user', {
+      username: username.value,
+    } as z.infer<typeof awarenessLocalStateSchema>)
+
+    users.value = awarenessStatusSchema.parse(awareness.getStates())
+
+    awareness.on('change', () => {
+      users.value = awarenessStatusSchema.parse(awareness.getStates())
+    })
+
     room.value = {
       roomId, password, store, yDoc, provider, awareness,
     }
+  }
+
+  const changeUsername = (name: string) => {
+    username.value = name
+    room.value?.awareness.setLocalStateField('user', {
+      username: name,
+    } as z.infer<typeof awarenessLocalStateSchema>)
   }
 
   const disconnectRoom = () => {
@@ -71,5 +91,5 @@ export const useAppStore = defineStore('app', () => {
     room.value = undefined
   }
 
-  return { username, room, snackbars, createRoom, disconnectRoom }
+  return { username, users, room, snackbars, createRoom, changeUsername, disconnectRoom }
 })
