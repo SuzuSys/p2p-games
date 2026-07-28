@@ -1,6 +1,7 @@
 <template>
   <form-username />
   <form-room v-if="!!store.username" />
+  <v-snackbar-queue v-model="store.snackbars" closable :timeout="3500" />
 </template>
 
 <script lang="ts" setup>

@@ -1,3 +1,4 @@
+import type { ColorType } from '@/plugins/vuetify'
 import type { Awareness } from 'y-protocols/awareness'
 import type { Doc } from 'yjs'
 import { getYjsDoc, syncedStore } from '@syncedstore/core'
@@ -22,9 +23,15 @@ interface RoomStore {
   awareness: Awareness
 }
 
+interface Snackbar {
+  text: string
+  color: ColorType
+}
+
 export const useAppStore = defineStore('app', () => {
   const username = ref('')
   const room: Ref<RoomStore | undefined> = ref()
+  const snackbars: Ref<Snackbar[]> = ref([])
 
   const createRoom = (roomId: string, password: string) => {
     const store = syncedStore({
@@ -49,6 +56,11 @@ export const useAppStore = defineStore('app', () => {
       console.log(awareness.getStates().values())
     })
 
+    provider.on('synced', _ => snackbars.value.push({
+      text: 'Synced!',
+      color: 'success',
+    }))
+
     room.value = {
       roomId, password, store, yDoc, provider, awareness,
     }
@@ -59,5 +71,5 @@ export const useAppStore = defineStore('app', () => {
     room.value = undefined
   }
 
-  return { username, room, createRoom, disconnectRoom }
+  return { username, room, snackbars, createRoom, disconnectRoom }
 })
