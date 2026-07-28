@@ -98,10 +98,7 @@
 
   const submit = handleSubmit(values => {
     store.createRoom(values.roomId, values.password)
-    store.room?.provider.on('status', value => console.log(value))
-    store.room?.provider.on('synced', value => console.log(value))
-    store.room?.provider.on('peers', value => console.log(value))
-    store.room?.provider.awareness.setLocalStateField('user', {
+    store.room?.awareness.setLocalStateField('user', {
       username: store.username,
     })
   })
