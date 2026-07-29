@@ -8,16 +8,16 @@ import { ref, type Ref } from 'vue'
 import { WebrtcProvider } from 'y-webrtc'
 import { z } from 'zod'
 
-interface Todo {
-  completed: boolean
-  title: string
-}
+const chatSchema = z.object({
+  from: z.number(),
+  message: z.string(),
+})
 
 interface RoomStore {
   roomId: string
   password: string
   store: ReturnType<typeof syncedStore<{
-    todos: Todo[]
+    chats: z.infer<typeof chatSchema>[]
   }>>
   yDoc: Doc
   provider: WebrtcProvider
@@ -54,7 +54,7 @@ export const useAppStore = defineStore('app', () => {
 
   const createRoom = (roomId: string, password: string) => {
     const store = syncedStore({
-      todos: [],
+      chats: [] as z.infer<typeof chatSchema>[],
     })
     const yDoc = getYjsDoc(store)
 
@@ -67,6 +67,10 @@ export const useAppStore = defineStore('app', () => {
       text: 'Synced!',
       color: 'success',
     }))
+
+    provider.on('peers', arg => {
+      console.log(arg)
+    })
 
     const awareness = provider.awareness
 
