@@ -1,12 +1,12 @@
 <template>
   <v-tabs-window v-model="store.tab">
-    <v-tabs-window-item :value="tabs[0]">
+    <v-tabs-window-item :value="tabs.home">
       <form-username />
       <form-room v-if="!!store.username" />
       <joined-user v-if="!!store.room" />
     </v-tabs-window-item>
 
-    <v-tabs-window-item :value="tabs[1]">
+    <v-tabs-window-item :value="tabs.chat">
       <chat />
     </v-tabs-window-item>
   </v-tabs-window>
