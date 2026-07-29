@@ -16,7 +16,7 @@
           v-model="store.tab"
           align-tabs="title"
         >
-          <v-tab v-for="tab in tabs" :value="tab">{{ tab }}</v-tab>
+          <v-tab v-for="tab in tabs" :key="tab" :value="tab">{{ tab }}</v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
