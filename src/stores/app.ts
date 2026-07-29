@@ -40,7 +40,10 @@ const awarenessStatusSchema = z.map(
   }),
 )
 
+export const tabs = ['Home', 'Chat'] as const
+
 export const useAppStore = defineStore('app', () => {
+  const tab: Ref<typeof tabs[number]> = ref('Home')
   const username = ref('')
   const room: Ref<RoomStore | undefined> = ref()
   const snackbars: Ref<Snackbar[]> = ref([])
@@ -91,5 +94,5 @@ export const useAppStore = defineStore('app', () => {
     room.value = undefined
   }
 
-  return { username, users, room, snackbars, createRoom, changeUsername, disconnectRoom }
+  return { tab, username, users, room, snackbars, createRoom, changeUsername, disconnectRoom }
 })

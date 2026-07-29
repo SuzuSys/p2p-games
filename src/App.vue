@@ -10,14 +10,26 @@
           @click="$vuetify.theme.cycle()"
         />
       </template>
+
+      <template #extension>
+        <v-tabs
+          v-model="store.tab"
+          align-tabs="title"
+        >
+          <v-tab v-for="tab in tabs" :value="tab">{{ tab }}</v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
 
     <v-main>
       <router-view />
+      <v-snackbar-queue v-model="store.snackbars" closable :timeout="3500" />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts" setup>
-  //
+  import { tabs, useAppStore } from '@/stores/app'
+
+  const store = useAppStore()
 </script>

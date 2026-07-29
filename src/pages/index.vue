@@ -1,15 +1,24 @@
 <template>
-  <form-username />
-  <form-room v-if="!!store.username" />
-  <joined-user v-if="!!store.room" />
-  <v-snackbar-queue v-model="store.snackbars" closable :timeout="3500" />
+  <v-tabs-window v-model="store.tab">
+    <v-tabs-window-item :value="tabs[0]">
+      <form-username />
+      <form-room v-if="!!store.username" />
+      <joined-user v-if="!!store.room" />
+    </v-tabs-window-item>
+
+    <v-tabs-window-item :value="tabs[1]">
+      <chat />
+    </v-tabs-window-item>
+  </v-tabs-window>
+
 </template>
 
 <script lang="ts" setup>
+  import Chat from '@/components/Chat.vue'
   import FormRoom from '@/components/FormRoom.vue'
   import FormUsername from '@/components/FormUsername.vue'
   import JoinedUser from '@/components/JoinedUser.vue'
-  import { useAppStore } from '@/stores/app'
+  import { tabs, useAppStore } from '@/stores/app'
 
   const store = useAppStore()
 
